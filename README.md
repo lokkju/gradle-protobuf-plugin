@@ -69,6 +69,9 @@ The protobuf plugin adds a `protobuf` extension to the project which allows you 
 * `outputJava` - Output directory for generated java source files. The value is relative to the project build directory.
 * `outputPython` - Output directory for generated python source files. The value is relative to the project build directory.
 * `outputToProjectDir` - Output generated files relative to project root directory instead of relative to build directory. Defaults to false.
+* `generateJava` - Generate or not java sources. Defaults to true.
+* `generateCpp` - Generate or not CPP sources. Defaults to true.
+* `generatePython` - Generate or not python sources. Defaults to true.
 
 Example
 -------

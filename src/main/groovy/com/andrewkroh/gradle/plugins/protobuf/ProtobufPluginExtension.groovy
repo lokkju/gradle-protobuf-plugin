@@ -67,4 +67,22 @@ class ProtobufPluginExtension {
      * relative to build directory.
      */
     boolean outputToProjectDir = false
+
+    /**
+     * Generate or not java sources.
+     * Defaults to "true" for compatibility with old configurations.
+     */
+    boolean generateJava = true
+
+    /**
+     * Generate or not CPP sources.
+     * Defaults to "true" for compatibility with old configurations.
+     */
+    boolean generateCpp = true
+
+    /**
+     * Generate or not python sources.
+     * Defaults to "true" for compatibility with old configurations.
+     */
+    boolean generatePython = true
 }

@@ -198,11 +198,19 @@ class ProtobufPlugin implements Plugin<Project> {
             def pythonOutputDir = project.file(generateRoot +
                                                project.protobuf.outputPython)
 
+            if (!project.protobuf.generateJava &&
+                    !project.protobuf.generateCpp &&
+                    !project.protobuf.generatePython)
+                throw new InvalidUserDataException("At least one target language must be active.")
+
             // Build up the full protoc command:
             def cmd = "${project.protobuf.compiler} "
-            cmd += "--java_out=$javaOutputDir "
-            cmd += "--cpp_out=$cppOutputDir "
-            cmd += "--python_out=$pythonOutputDir "
+            if (project.protobuf.generateJava)
+                cmd += "--java_out=$javaOutputDir "
+            if (project.protobuf.generateCpp)
+                cmd += "--cpp_out=$cppOutputDir "
+            if (project.protobuf.generatePython)
+                cmd += "--python_out=$pythonOutputDir "
             cmd += "--proto_path=$srcDir "
             srcProtoFiles.getFiles().each { srcFile ->
                 cmd += "${srcFile.path} "
@@ -211,9 +219,9 @@ class ProtobufPlugin implements Plugin<Project> {
             // Declare the task's inputs and outputs so Gradle knows
             // if the task needs to run.
             inputs.files(srcProtoFiles.getFiles())
-            outputs.dir(javaOutputDir)
-            outputs.dir(cppOutputDir)
-            outputs.dir(pythonOutputDir)
+            project.protobuf.generateJava && outputs.dir(javaOutputDir)
+            project.protobuf.generateCpp && outputs.dir(cppOutputDir)
+            project.protobuf.generatePython && outputs.dir(pythonOutputDir)
 
             // Configure the compileJava task to compile the generated
             // java source files from this task.
@@ -221,9 +229,9 @@ class ProtobufPlugin implements Plugin<Project> {
 
             doLast {
                 // Create the output dirs if they do not exist:
-                javaOutputDir.exists() || javaOutputDir.mkdirs()
-                cppOutputDir.exists() || cppOutputDir.mkdirs()
-                pythonOutputDir.exists() || pythonOutputDir.mkdirs()
+                project.protobuf.generateJava && javaOutputDir.exists() || javaOutputDir.mkdirs()
+                project.protobuf.generateCpp && cppOutputDir.exists() || cppOutputDir.mkdirs()
+                project.protobuf.generatePython && pythonOutputDir.exists() || pythonOutputDir.mkdirs()
 
                 logger.info("Compiling protocol buffers: $cmd")
                 StringBuffer output = new StringBuffer()
